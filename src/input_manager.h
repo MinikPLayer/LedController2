@@ -1,3 +1,5 @@
+#pragma once
+
 static const char _SERIAL_MANAGER_SKIP_CHARACTERS[] = { '\r' };
 
 template<int T>
@@ -5,26 +7,10 @@ class InputManager {
     char buffer[T];
     int currentBufferIndex = 0;
 
-protected:
-    virtual void onSetup() {}
-    virtual void onLoop() {}
-
     virtual int availableCharsCount() = 0;
     virtual char readChar() = 0;
 
-    virtual void print(const char* data) = 0;
-    virtual void print(int n) = 0;
-
 private:
-    void println(const char* data) {
-        print(data);
-        print("\n");
-    }
-
-    void println(int n) {
-        print(n);
-        print("\n");
-    }
 
     static bool isCharSkipped(char c) {
         for(uint i = 0; i < sizeof(_SERIAL_MANAGER_SKIP_CHARACTERS); i++) {
@@ -37,6 +23,18 @@ private:
     }
 
 public:
+    virtual void print(const char* data) = 0;
+    virtual void print(int n) = 0;
+
+    void println(const char* data) {
+        print(data);
+        print("\n");
+    }
+
+    void println(int n) {
+        print(n);
+        print("\n");
+    }
 
     void resetBuffer() {
         for(int i = 0; i < T; i++) {
@@ -45,12 +43,11 @@ public:
         currentBufferIndex = 0;
     }
 
-    void setup() {
+    virtual void setup() {
         resetBuffer();
-        onSetup();
     }
 
-    void loop() {
+    virtual void loop() {
         int availableToRead = availableCharsCount();
         if(availableToRead > 0) {
             for(int i = 0; i < availableToRead; i++) {

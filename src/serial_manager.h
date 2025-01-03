@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "parser.h"
 #include "input_manager.h"
+#include "config.h"
 
 template<int T>
 class SerialManager : public InputManager<T> {
@@ -14,6 +15,9 @@ class SerialManager : public InputManager<T> {
         return Serial.read();
     }
 
+
+public:
+
     void print(const char* data) override {
         Serial.print(data);
     }
@@ -22,9 +26,12 @@ class SerialManager : public InputManager<T> {
         Serial.print(n);
     }
 
-public:
-    void onSetup() override {
+    void setup() override {
+        InputManager<T>::setup();
+
         Serial.begin(baudRate);
+        Serial.println("");
+        LOG("SerialManager started!");
     }
 
     SerialManager(int baudRate) {
