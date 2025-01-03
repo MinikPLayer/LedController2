@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "parser.h"
 #include "serial_manager.h"
+#include "config.h"
 
 #define NUM_LEDS 18
 #define DATA_PIN 15
@@ -10,15 +11,17 @@
 CRGB leds[NUM_LEDS];
 CRGB leds2[NUM_LEDS];
 
-SerialManager<256> serialManager;
+SerialManager<256> serialManager(115200);
 
 void setup()
 {
     FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);
     FastLED.addLeds<WS2812B, DATA_PIN2, GRB>(leds2, NUM_LEDS);
 
-    serialManager.setup(115200);
-    Serial.println("Hello!");
+    serialManager.setup();
+    Serial.println("");
+    Serial.print("[LEDController2] "); Serial.println(VERSION);
+    Serial.println("OK");
 
     for(int i = 0; i < NUM_LEDS; i++) {
         leds[i] = leds2[i] = CRGB::Red;
